@@ -4,15 +4,20 @@ html {
 
 body {
 	width: 100%;
-	min-width: 1900px;
 	font-smooth: auto;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 
+table.table, table.table-striped {
+	max-width: 450px;
+	margin: 0 auto;
+	margin-bottom: 22px;
+}
+
 table td {
 	font-size: 14px;
-	white-space: nowrap !important;
+	/*white-space: nowrap !important;*/
 	-webkit-font-smoothing: subpixel-antialiased;
 	-moz-osx-font-smoothing: auto;
 }
@@ -85,6 +90,9 @@ table td {
 }
 
 .big-info {
+	position: relative;
+	width: 350px;
+	margin: 0 auto;
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
