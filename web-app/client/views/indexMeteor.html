@@ -1,0 +1,187 @@
+<template name="indexMeteor">
+    {{#with Blockchain}}
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xs-2 stat-holder">
+            <div class="big-info bestblock text-info">
+              <div class="pull-left icon-full-width"><i class="icon-block"></i></div>
+              <div class="big-details-holder"><span class="small-title">best block</span><span class="big-details">{{ number bestBlock }}</span></div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="col-xs-2 stat-holder">
+            <div class="big-info uncleCount text-info">
+              <div class="pull-left icon-full-width"><i class="icon-uncle"></i></div>
+              <div class="big-details-holder"><span class="small-title">uncles&nbsp;<span class="small">(current / last 50)</span></span><span class="big-details">{{ bestStats.block.uncles.length }}/{{ uncleCount }}</span></div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="col-xs-2 stat-holder">
+            <div class="big-info blocktime {{ timeClass lastBlock true }}">
+              <div class="pull-left icon-full-width"><i class="icon-time"></i></div>
+              <div class="big-details-holder"><span class="small-title">last block</span><span class="big-details">{{ blockTimeFilter }}</span>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="col-xs-2 stat-holder">
+            <div class="big-info avgblocktime {{ avgTimeClass avgBlockTime }}">
+              <div class="pull-left icon-full-width"><i class="icon-gas"></i></div>
+              <div class="big-details-holder"><span class="small-title">avg block time</span><span class="big-details">{{ avgTimeFilter }}</span></div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="col-xs-2 stat-holder">
+            <div class="big-info difficulty text-orange">
+              <div class="pull-left icon-full-width"><i class="icon-hashrate"></i></div>
+              <div class="big-details-holder"><span class="small-title">avg network hashrate</span><span class="big-details">{{networkHashrateFilter avgHashrate false}}</span></div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="col-xs-2 stat-holder">
+            <div class="big-info difficulty text-danger">
+              <div class="pull-left icon-full-width"><i class="icon-difficulty"></i></div>
+              <div class="big-details-holder"><span class="small-title">difficulty</span><span class="big-details"><span class="small-hash">{{ number lastDifficulty }}</span></span></div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+
+          <div class="clearfix"></div>
+        </div>
+
+        <div class="row">
+          <div style="padding-top: 0px;" class="col-xs-8 stats-boxes">
+            <div class="row second-row">
+              <div class="col-xs-3 stat-holder box">
+                <div class="active-nodes {{ nodesActiveClass nodesActive nodesTotal }}"><i class="icon-node"></i><span class="small-title">active nodes</span><span class="small-value">{{nodesActive}}/{{nodesTotal}}</span></div>
+              </div>
+              <div class="col-xs-3 stat-holder box">
+                <div class="gasprice text-info"><i class="icon-gasprice"></i><span class="small-title">gas price</span><span class="small-value">{{ gasPriceFilter bestStats.gasPrice.toString }}</span></div>
+              </div>
+              <div class="col-xs-3 stat-holder box">
+                <div class="page-latency {{ latencyClass true latency }}"><i class="icon-clock"></i><span class="small-title">page latency</span><span class="small-value">{{latency}} ms</span></div>
+              </div>
+              <div class="col-xs-3 stat-holder box">
+                <div class="uptime {{ upTimeClass upTimeTotal true }}"><i class="icon-bulb"></i><span class="small-title">uptime</span><span class="small-value">{{ upTimeFilter upTimeTotal }}</span></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-3 stat-holder">
+                <div class="big-info chart {{ avgTimeClass avgBlockTime }}"><span class="small-title">block time</span>
+                  <sparkchart tooltipsuffix="s" class="big-details spark-blocktimes"></sparkchart>
+                </div>
+              </div>
+              <div class="col-xs-3 stat-holder">
+                <div class="big-info chart text-info"><span class="small-title">difficulty</span>
+                  <sparkchart class="big-details spark-difficulty"></sparkchart>
+                </div>
+              </div>
+              <div class="col-xs-3 stat-holder xpull-right">
+                <div class="big-info chart xdouble-chart {{ propagationAvgTimeClass blockPropagationAvg true }}"><span class="small-title">block propagation</span>
+                  <histogram class="big-details d3-blockpropagation"></histogram>
+                </div>
+              </div>
+              <div class="col-xs-3 stat-holder pull-right">
+                <div class="big-info chart double-chart"><span class="small-title">last blocks miners</span>
+                  <div data-toggle="tooltip" data-placement="right" data-original-title="{{miner.blocks}}" class="blocks-holder">
+                    {{#each miners}}
+                      <div class="block-count {{minerBlocksClass blocks 'text-'}}">{{blocks}}</div>
+                      <div class="small-title-miner">{{miner}}</div>
+                      {{! #each minerBlocks}}
+                        <!-- <div class="block {{minerBlockClass ../blocks}}"></div> -->
+                      {{! /each}}
+                      <div class="clearfix"></div>
+                    {{/each}}
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-3 stat-holder">
+                <div class="big-info chart text-info"><span class="small-title">uncle count&nbsp;<span class="small">(25 blocks per bar)</span></span>
+                  <sparkchart class="big-details spark-uncles"></sparkchart>
+                </div>
+              </div>
+              <div class="col-xs-3 stat-holder">
+                <div class="big-info chart text-info"><span class="small-title">transactions</span>
+                  <sparkchart class="big-details spark-transactions"></sparkchart>
+                </div>
+              </div>
+              <div class="col-xs-3 stat-holder">
+                <div class="big-info chart text-info"><span class="small-title">gas spending</span>
+                  <sparkchart class="big-details spark-gasspending"></sparkchart>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-4 stat-holder map-holder">
+            <nodemap id="mapHolder"></nodemap>
+          </div>
+
+          <div class="col-xs-12 stats-boxes">
+            <div class="row second-row">
+              <div class="col-xs-12 stat-holder box">
+                <div class="active-nodes text-orange"><i class="icon-hashrate"></i><span class="small-title">Block #1028201 hash</span><span class="small-value">{{frontierHash}}</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    {{/with}}
+
+    <div style="padding-top: 10px" class="row">
+      <table class="table table-striped">
+        <thead>
+          <tr class="text-info">
+            <th class="th-nodecheck"><i data-toggle="tooltip" data-placement="top" title="Pin nodes to display first" ng-click="orderTable(['-stats.block.number', 'stats.block.propagation'], false)" class="icon-check-o"></i></th>
+            <th class="th-nodename"><i data-toggle="tooltip" data-placement="top" title="Node name" ng-click="orderTable(['info.name'], false)" class="icon-node"></i></th>
+            <th class="th-nodetype"><i data-toggle="tooltip" data-placement="top" title="Node type" ng-click="orderTable(['info.node'], false)" class="icon-laptop"></i></th>
+            <th class="th-latency"><i data-toggle="tooltip" data-placement="top" title="Node latency" ng-click="orderTable(['stats.latency'], false)" class="icon-clock"></i></th>
+            <th><i data-toggle="tooltip" data-placement="top" title="Is mining" ng-click="orderTable(['-stats.hashrate'], false)" class="icon-mining"></i></th>
+            <th><i data-toggle="tooltip" data-placement="top" title="Peers" ng-click="orderTable(['-stats.peers'], false)" class="icon-group"></i></th>
+            <th><i data-toggle="tooltip" data-placement="top" title="Pending transactions" ng-click="orderTable(['-stats.pending'], false)" class="icon-network"></i></th>
+            <th><i data-toggle="tooltip" data-placement="top" title="Last block" ng-click="orderTable(['-stats.block.number', 'stats.block.propagation'], false)" class="icon-block"></i></th>
+            <th class="th-blockhash">&nbsp;</th>
+            <th class="th-blockhash"><i data-toggle="tooltip" data-placement="top" title="Total difficulty" ng-click="orderTable(['-stats.block.totalDifficulty'], false)" class="icon-difficulty"></i></th>
+            <th><i data-toggle="tooltip" data-placement="top" title="Block transactions" ng-click="orderTable(['-stats.block.transactions.length'], false)" class="icon-check-o"></i></th>
+            <th><i data-toggle="tooltip" data-placement="top" title="Uncles" ng-click="orderTable(['-stats.block.uncles.length'], false)" class="icon-uncle"></i></th>
+            <th class="th-blocktime"><i data-toggle="tooltip" data-placement="top" title="Last block time" ng-click="orderTable(['-stats.block.received'], false)" class="icon-time"></i></th>
+            <th class="th-peerPropagationTime"><i data-toggle="tooltip" data-placement="top" title="Propagation time" ng-click="orderTable(['-stats.block.number', 'stats.block.propagation'], false)" class="icon-gas"></i></th>
+            <th class="th-peerPropagationChart"></th>
+            <th class="th-peerPropagationAvg"><i data-toggle="tooltip" data-placement="top" title="Average propagation time" ng-click="orderTable(['stats.propagationAvg'], false)" class="icon-gas"></i></th>
+            <th><i data-toggle="tooltip" data-placement="top" title="Up-time" ng-click="orderTable(['-stats.uptime'], false)" class="icon-bulb"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each nodes}}
+            <tr class="{{ mainClass stats Blockchain.bestBlock }}" id="node_{{id}}">
+              <td class="td-nodecheck"><i ng-click="pinNode(id)" data-toggle="tooltip" data-placement="right" data-original-title="Click to {{#if pinned}}'un'{{else}}''{{/if}}pin" class="{{ nodePinClass pinned }}"></i></td>
+              <td rel="{{id}}" class="nodeInfo"><span data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="{{geoTooltip this}}" class="small">{{info.name}}</span><span class="small">&nbsp;({{info.ip}})</span><a href="https://github.com/ethereum/wiki/wiki/Network-Status#updating" target="_blank" data-toggle="tooltip" data-placement="top" data-html="true" data-original-title="Netstats client needs update.&lt;br&gt;Click this icon for instructions." class="small {{ nodeClientClass info Blockchain.currentApiVersion }}"><i class="icon-warning-o"></i></a></td>
+              <td>
+                <div class="small">{{nodeVersion info.node}}</div>
+              </td>
+              <td class="{{ readable.latencyClass }}"><span class="small">{{ readable.latency }}</span></td>
+              <td class="{{ hashrateClass stats.mining stats.active }}">{{hashrateFilter stats.hashrate stats.mining}}</td>
+              <td style="padding-left: 11px;" class="{{ peerClass stats.peers stats.active }}">{{stats.peers}}</td>
+              <td style="padding-left: 15px;">{{stats.pending}}</td>
+              <td class="{{ blockClass stats Blockchain.bestBlock }}"><span class="{{#if readable.forkMessage}} {{readable.forkClass}} {{else}} '' {{/if}}">{{ number stats.block.number }}</span>
+              </td>
+              <td class="{{ blockClass stats Blockchain.bestBlock }}"><span class="small">{{hashFilter stats.block.hash}}</span></td>
+              <td class="{{ blockClass stats Blockchain.bestBlock }}"><span class="small">{{number stats.block.totalDifficulty}}</span></td>
+              <td style="padding-left: 14px;">{{stats.block.transactions.length}}</td>
+              <td style="padding-left: 14px;">{{stats.block.uncles.length}}</td>
+              <td class="{{ timeClass stats.block.received stats.active }}">{{blockTimeFilter stats.block.received }}</td>
+              <td class="{{ propagationTimeClass stats Blockchain.bestBlock }}">
+                <div class="propagationBox"></div><span>{{blockPropagationFilter stats.block.propagation false}}</span>
+              </td>
+              <td class="peerPropagationChart {{id}}">
+              </td>
+              <td class="{{ propagationNodeAvgTimeClass stats Blockchain.bestBlock }}">{{ blockPropagationAvgFilter stats Blockchain.bestBlock }}</td>
+              <td class="{{ upTimeClass stats.uptime stats.active }}">{{ upTimeFilter stats.uptime }}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+</template>
